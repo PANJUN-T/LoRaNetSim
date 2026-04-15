@@ -2,7 +2,7 @@ import math
 import random
 
 from .CoverageModule import CoverageModule
-from nanoid import generate
+
 
 from .LifetimeModule import LifetimeModule
 

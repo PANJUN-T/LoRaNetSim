@@ -3,9 +3,9 @@ import numpy as np
 from .Packet import Packet
 from collections import deque
 from typing import Dict, Tuple, Deque
-# from .GlobalCfg import *
+
 from src import GlobalCfg as GCfg
-from nanoid import generate
+
 import random
 
 
