@@ -150,6 +150,50 @@ def show_result(res_dict):
         fig5.savefig(date_folder_path + r"\DelayTimePerFrame.png", dpi=400, bbox_inches="tight")
 
 
+def CDFtest(nNode):
+    # 全局参数配置
+    cfg = {
+        "new_SimulationDuration": 60000 * 2,  # 仿真时间 分钟
+        "new_lamuda": 0.1,  # 泊松分布λ
+        "new_ADR": False,  # ADR
+        "new_SimModule": "MAC",  # 仿真模式
+        "new_Actual_CADe": False,  # 实测CAD效率 or 100%可靠性
+        "new_AutoSaveResult": True  # 自动保存结果
+    }
+    GCfg.GlobalConfig(**cfg)
+
+    # 单次测试, 评估PRR分布特性
+    result = defaultdict(dict)
+    for LoRaMAC in GCfg.LoRaMAC:
+        LoRaSim = LoRaSimulationEnv(nNode, LoRaMAC, GCfg.ParameterOptimization.minTOA)
+        LoRaSim.run()
+        LoRaSim.Show_Results()
+        result[LoRaMAC.value] = {"PRRs": LoRaSim.PRRs}
+    # 不同协议下的PRR分布CDF对比图
+    plt.figure(figsize=(8, 5))
+    # 协议固定配色
+    PROTOCOL_COLORS = {
+        'ALOHA': '#1f77b4',  # 蓝色
+        'LMAC-1': '#ff7f0e',  # 橙色
+        'LMAC-2': '#2ca02c',  # 绿色
+        'CSMA-LoRa': '#8c564b',  # 棕色
+    }
+
+    for mac_name, data in result.items():
+        prrs = np.sort(data["PRRs"])
+        cdf = np.arange(1, len(prrs) + 1) / len(prrs)
+        # 从字典取对应协议颜色，无匹配则用灰色
+        color = PROTOCOL_COLORS.get(mac_name, '#7f7f7f')
+        plt.plot(prrs, cdf, linewidth=2.5, color=color, label=mac_name)
+
+    plt.grid(True, alpha=0.3)
+    plt.legend(fontsize=12)
+    plt.xlabel("PRR", fontsize=12)
+    plt.ylabel("CDF", fontsize=12)
+    plt.tight_layout()
+    plt.show()
+
+
 def func(mac, nNode, optimization, r_dict, cfg):
     # 多进程相互独立，也需要更新全局参数
     GCfg.GlobalConfig(**cfg)
@@ -169,24 +213,17 @@ def func(mac, nNode, optimization, r_dict, cfg):
 if __name__ == "__main__":
     # 全局参数配置
     cfg = {
-        "new_SimulationDuration": 60000 * 2,    # 仿真时间 分钟
-        "new_lamuda": 0.1,                      # 泊松分布λ
-        "new_ADR": False,                       # ADR
-        "new_SimModule": "MAC",                 # 仿真模式
-        "new_Actual_CADe": False,               # 实测CAD效率 or 100%可靠性
-        "new_AutoSaveResult": True              # 自动保存结果
+        "new_SimulationDuration": 60000 * 2,  # 仿真时间 分钟
+        "new_lamuda": 0.1,  # 泊松分布λ
+        "new_ADR": False,  # ADR
+        "new_SimModule": "MAC",  # 仿真模式
+        "new_Actual_CADe": False,  # 实测CAD效率 or 100%可靠性
+        "new_AutoSaveResult": True  # 自动保存结果
     }
     GCfg.GlobalConfig(**cfg)
 
-    # 单次测试例程
-    # 仿真参数
-    NodeNum = 100                             # 节点数量
-    LoRaMac = GCfg.LoRaMAC.ALOHA              # MAC协议
-    NodeMap = GCfg.ParameterOptimization.minTOA  # 初始参数分配方法/节点分布
-    # 启动仿真
-    LoRaSim = LoRaSimulationEnv(NodeNum, LoRaMac, NodeMap)
-    LoRaSim.run()
-    LoRaSim.Show_Results()
+    # 单次测试, 评估PRR分布特性
+    CDFtest(1000)
 
     # # 批量测试例程
     # process_list = []  # 进程池

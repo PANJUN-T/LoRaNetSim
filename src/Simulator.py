@@ -37,6 +37,7 @@ class LoRaSimulationEnv:
         self.EnergyEfficiency = None
         self.CADsPerFrame = None
         self.DelayTimePerFrame = None
+        self.PRRs = []  # 节点PRR分布
         # 区间仿真结果
         self.temp_PRR = []
         self.temp_Goodput = []
@@ -136,19 +137,11 @@ class LoRaSimulationEnv:
             print("time: {:.1f}s".format(self.env.now / 60000))
             yield self.env.timeout(GCfg.STATISTICS_INTERVAL)  # 刷新率
 
-    def ADR_Monitor(self):
-        while not self.ADR_all_adjusted:
-            adjusted_count = sum(1 for node in self.Nodes if node.ADR_adjusted)
-            if adjusted_count == len(self.Nodes):
-                self.ADR_all_adjusted = True
-                self.ADR_adjustment_time = self.env.now
-                self.ADR_stop_event.succeed()
-                break
-            yield self.env.timeout(1000)
 
     def Show_Results(self):
         SumReceive = self.GW.receive_sum
         SumReceiveEnergy = self.GW.rec_energy_sum
+
         SumSend = 0
         SumCAD = 0
         SumSendEnergy = 0
@@ -158,6 +151,7 @@ class LoRaSimulationEnv:
             SumCAD += node.cad_sum
             SumSendEnergy += node.energy_sum
             sumDelayTime += node.avg_delay
+            self.PRRs.append(0 if (node.send_sum == 0) else round(node.aflewer / node.send_sum, 4))
 
         # 注意异常数据处理：不能除0
         # PRR

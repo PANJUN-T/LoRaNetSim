@@ -62,6 +62,8 @@ class Node:
         self.send_sum = 0
         self.cad_sum = 0
         self.energy_sum = 0
+        self.aflewer = 0  # 成功送达到网关的计数器，用于统计节点分布性能
+
         # 区间统计
         self.sent_in_interval = 0
 
@@ -252,6 +254,9 @@ class Node:
         return distance
 
     def CheckDownLink(self, packet):
+        # ACK\NACK
+        if packet.ACK:
+            self.aflewer += 1
         # 记录ACK（只有未碰撞的包才记录）,去除因为碰撞引起的丢包,只考虑信噪比丢包
         if not packet.collided:
             self.ACKList.append(packet.ACK)
