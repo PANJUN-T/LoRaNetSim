@@ -22,7 +22,7 @@ LoRaNetSim是一个基于simpy的适用于LoRa网络的数据包级别仿真器�
 
 ```
 test_MAC.py                 -> MAC协议测试例程
-test_DynamicNet.py          -> DS-LoRa协议动态化改进的测试
+test_DynamicNet.py          -> 动态网络与区间统计功能测试例程
 test_parameter.py           -> 不同初始参数分配方法测试例程
 test_ADR.py                 -> ADR测试例程
 test_SN.py                  -> 仿真器性能测试例程
