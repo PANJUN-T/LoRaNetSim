@@ -99,7 +99,10 @@ if __name__ == "__main__":
     parameter_optimization = GCfg.ParameterOptimization.minTOA
 
     # 单次测试
-    func(LoRa_MAC, 1000, parameter_optimization, result_dict, "SN1", cfg)
+    func(LoRa_MAC, 100, parameter_optimization, result_dict, "SN1", cfg)
+    func(LoRa_MAC, 100, parameter_optimization, result_dict, "SN2", cfg)
+    func(LoRa_MAC, 100, parameter_optimization, result_dict, "SN3", cfg)
+
 
     # # 批量测试
     # for x in range(0, 10):

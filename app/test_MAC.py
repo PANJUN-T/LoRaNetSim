@@ -169,7 +169,7 @@ def CDFtest(nNode):
         LoRaSim.run()
         result[LoRaMAC.value] = {"PRRs": LoRaSim.PRRs}
     # 不同协议下的PRR分布CDF对比图
-    plt.figure(figsize=(8, 5))
+    fig1 = plt.figure(figsize=(8, 5))
     # 协议固定配色
     PROTOCOL_COLORS = {
         'ALOHA': '#1f77b4',  # 蓝色
@@ -190,6 +190,22 @@ def CDFtest(nNode):
     plt.xlabel("PRR", fontsize=12)
     plt.ylabel("CDF", fontsize=12)
     plt.tight_layout()
+
+
+    # 🔶保存数据
+    if GCfg.AutoSaveResult:
+        res_folder = "MAC_Result"
+        os.makedirs(res_folder, exist_ok=True)
+        # 保存原始数据
+        with open(str(res_folder + r"\prr-cdf-{}.json".format(nNode)), "w", encoding="utf-8") as f:  # 保存原始数据
+            json.dump(result, f, ensure_ascii=False, indent=4)
+            f.flush()  # 清空Python级别的缓冲区
+            os.fsync(f.fileno())  # 强制操作系统将缓冲区写入磁盘
+
+        # 保存图片
+        fig1.savefig(res_folder + r"\prr-cdf-{}.png".format(nNode), dpi=400, bbox_inches="tight")
+
+
     plt.show()
 
 
@@ -223,7 +239,7 @@ if __name__ == "__main__":
     # 单次测试, 评估PRR分布特性
     CDFtest(1000)
 
-    # # 批量测试例程
+    # 批量测试例程
     # process_list = []  # 进程池
     # manager = Manager()  # ？
     # result_dict = manager.dict()
