@@ -70,6 +70,8 @@ class LoRaSimulationEnv:
         self.env.run(until=self.sim_duration)  # 开始仿真
         self.run_time = time.time() - start_time  # 计算耗时（秒）
 
+        self.Show_Results()
+
     def upnode(self):
         yield self.env.timeout(GCfg.STATISTICS_INTERVAL * 5 * 1)
         # 添加节点
@@ -104,7 +106,7 @@ class LoRaSimulationEnv:
     def monitor(self):
         while True:
             yield self.env.timeout(GCfg.STATISTICS_INTERVAL / 2)
-            print("time: {:.1f}s".format(self.env.now/60000))
+            print("time: {:.1f}s".format(self.env.now / 60000))
             # 每隔一段时间统计网络性能
             sumSend = 0
             for node in self.Nodes:
@@ -136,7 +138,6 @@ class LoRaSimulationEnv:
             DM.ShowMap(DynamicMap)  # 更新图像
             print("time: {:.1f}s".format(self.env.now / 60000))
             yield self.env.timeout(GCfg.STATISTICS_INTERVAL)  # 刷新率
-
 
     def Show_Results(self):
         SumReceive = self.GW.receive_sum
@@ -171,5 +172,3 @@ class LoRaSimulationEnv:
                   .format(self.MAC.value, self.node_num, SumSend, SumReceive, self.CADsPerFrame,
                           self.PRR * 100, self.Goodput, self.EnergyEfficiency * 100, self.DelayTimePerFrame,
                           self.run_time))
-
-

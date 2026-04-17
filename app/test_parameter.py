@@ -90,7 +90,6 @@ def func(mac, nNode, optimization, r_dict, cfg):
     # 可自定义参数：节点数、仿真时长
     LoRaSim = LoRaSimulationEnv(nNode, mac, optimization)
     LoRaSim.run()
-    LoRaSim.Show_Results()
 
     # 结果
     dict_key = (optimization.value, nNode)

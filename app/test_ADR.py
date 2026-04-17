@@ -29,4 +29,4 @@ if __name__ == "__main__":
     # 启动仿真
     LoRaSim = LoRaSimulationEnv(NodeNum, LoRaMac, GCfg.ParameterOptimization.ADR)
     LoRaSim.run()
-    LoRaSim.Show_Results()
+    # LoRaSim.Show_Results()

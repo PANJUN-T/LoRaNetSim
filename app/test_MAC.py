@@ -167,7 +167,6 @@ def CDFtest(nNode):
     for LoRaMAC in GCfg.LoRaMAC:
         LoRaSim = LoRaSimulationEnv(nNode, LoRaMAC, GCfg.ParameterOptimization.minTOA)
         LoRaSim.run()
-        LoRaSim.Show_Results()
         result[LoRaMAC.value] = {"PRRs": LoRaSim.PRRs}
     # 不同协议下的PRR分布CDF对比图
     plt.figure(figsize=(8, 5))
@@ -201,7 +200,6 @@ def func(mac, nNode, optimization, r_dict, cfg):
     # 可自定义参数：节点数、仿真时长
     LoRaSim = LoRaSimulationEnv(nNode, mac, optimization)
     LoRaSim.run()
-    LoRaSim.Show_Results()
 
     # 结果
     dict_key = (mac.value, nNode)

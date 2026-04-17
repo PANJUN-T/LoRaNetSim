@@ -74,7 +74,6 @@ if __name__ == "__main__":
     # 启动仿真
     LoRaSim = LoRaSimulationEnv(NodeNum, LoRaMac, NodeMap)
     LoRaSim.run()
-    LoRaSim.Show_Results()
     # 可视化结果
     show_result(LoRaSim.temp_PRR, LoRaSim.temp_Goodput)
     plt.show()

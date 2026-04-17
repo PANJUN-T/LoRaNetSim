@@ -71,7 +71,6 @@ def func(mac, nNode, optimization, r_dict, SN_key, cfg):
     # 可自定义参数：节点数、仿真时长
     LoRaSim = LoRaSimulationEnv(nNode, mac, optimization)
     LoRaSim.run()
-    LoRaSim.Show_Results()
 
     run_time = time.time() - start_time  # 计算耗时（秒）
 
