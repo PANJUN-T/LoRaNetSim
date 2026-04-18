@@ -123,10 +123,10 @@ if __name__ == "__main__":
     for i in range(6):
         sf = 7 + i
         tp = 15
-        dist = CoverageModule.getCoverage(30000, sf, tp)
+        dist = CoverageModule.getCoverage(sf, tp)
         print("({}, {}): {}米".format(sf, tp, dist))
 
-    print("最远传输距离：{}米".format(CoverageModule.getCoverage(30000, 12, 20)))
+    print("最远传输距离：{}米".format(CoverageModule.getCoverage(12, 20)))
 
     tp = 15
     prrData = dict()
