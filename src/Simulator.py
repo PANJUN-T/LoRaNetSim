@@ -76,7 +76,8 @@ class LoRaSimulationEnv:
         yield self.env.timeout(GCfg.STATISTICS_INTERVAL * 5 * 1)
         # 添加节点
         n = 1500
-        map_temp = NodeMap.GetNodeMap(n, self.Parameter_Optimization)
+        # TODO DEBUG:新节点位置与原节点位置有重复的可能，地图显示无法看出重叠的节点
+        map_temp = NodeMap.RandomChoice(n, self.Parameter_Optimization)
         for info in map_temp.values():
             nid = self._max_node_id + 1
             node = Node(self.env, self.CHANNEL, self.GW, self.MAC,
@@ -86,7 +87,7 @@ class LoRaSimulationEnv:
 
         yield self.env.timeout(GCfg.STATISTICS_INTERVAL * 5 * 1)
         n = 1500
-        map_temp = NodeMap.GetNodeMap(n, self.Parameter_Optimization)
+        map_temp = NodeMap.RandomChoice(n, self.Parameter_Optimization)
         for info in map_temp.values():
             nid = self._max_node_id + 1
             node = Node(self.env, self.CHANNEL, self.GW, self.MAC,

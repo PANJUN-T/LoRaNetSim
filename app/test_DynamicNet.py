@@ -59,7 +59,7 @@ def show_result(prr, goodput):
 if __name__ == "__main__":
     # 全局参数配置
     GCfg.GlobalConfig(
-        new_SimulationDuration=60000 * 20,  # 仿真时间 分钟
+        new_SimulationDuration=60000 * 20,  # 仿真时间 秒
         new_lamuda=0.2,  # 泊松分布λ
         new_ADR=False,  # ADR
         new_SimModule="Dynamic",  # 仿真模式

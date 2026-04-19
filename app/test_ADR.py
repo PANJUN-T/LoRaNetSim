@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 if __name__ == "__main__":
     # 全局参数配置
     cfg = {
-        "new_SimulationDuration": 60000 * 60 * 1,    # 仿真时间 小时
+        "new_SimulationDuration": 60000 * 60 * 5,    # 仿真时间 小时
         "new_lamuda": 0.1,                           # 泊松分布λ
         "new_ADR": True,                             # ADR
         "new_SimModule": "ADR",                      # 仿真模式

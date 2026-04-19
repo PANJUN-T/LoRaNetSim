@@ -80,6 +80,13 @@ class NodeMap:
                 os.fsync(f.fileno())  # 强制操作系统将缓冲区写入磁盘
 
     @classmethod
+    def RandomChoice(cls, nNode, OptimizationType):
+        data = NodeMap.ReadMap(cls.DEFAULT_NODE_NUM, OptimizationType)  # 读取最高节点数量的map
+        randomChoice = random.sample(list(data.values()), nNode)
+        new_map = {i + 1: randomChoice[i] for i in range(nNode)}  # 新字典，键从1开始
+        return new_map
+
+    @classmethod
     def GetNodeMap(cls, nNode, OptimizationType):
         # 读取节点map， 如果map文件存在，则从文件读取；如果map文件不存在，则从默认map中随机选取所需要的节点数量
         folder = "Nodes"
@@ -91,9 +98,7 @@ class NodeMap:
                 node_map = json.load(f)  # 读取节点分布
         else:
             # 随机选取
-            data = NodeMap.ReadMap(cls.DEFAULT_NODE_NUM, OptimizationType)  # 读取最高节点数量的map
-            randomChoice = random.sample(list(data.values()), nNode)
-            node_map = {i + 1: randomChoice[i] for i in range(nNode)}  # 新字典，键从1开始
+            node_map = cls.RandomChoice(nNode, OptimizationType)
             # 立即保存
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(node_map, f, ensure_ascii=False, indent=4)
