@@ -60,7 +60,7 @@ class LoRaSimulationEnv:
         # 动态自适应仿真时开启
         if GCfg.SimModule == "Dynamic":
             self.env.process(self.monitor())  # 区间统计
-            # self.env.process(self.upnode())  # 动态节点数量
+            self.env.process(self.upnode())  # 动态节点数量
 
         # ADR仿真时开启
         if GCfg.SimModule == "ADR":
