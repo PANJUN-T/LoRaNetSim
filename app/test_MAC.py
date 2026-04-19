@@ -148,6 +148,12 @@ def show_result(res_dict):
         fig3.savefig(date_folder_path + r"\EnergyEfficiency.png", dpi=400, bbox_inches="tight")
         fig4.savefig(date_folder_path + r"\CADsPerFrame.png", dpi=400, bbox_inches="tight")
         fig5.savefig(date_folder_path + r"\DelayTimePerFrame.png", dpi=400, bbox_inches="tight")
+        # svg
+        fig1.savefig(date_folder_path + r"\goodput.svg", dpi=300, bbox_inches="tight", format='svg')
+        fig2.savefig(date_folder_path + r"\prr.svg", dpi=400, bbox_inches="tight", format='svg')
+        fig3.savefig(date_folder_path + r"\EnergyEfficiency.svg", dpi=400, bbox_inches="tight", format='svg')
+        fig4.savefig(date_folder_path + r"\CADsPerFrame.svg", dpi=400, bbox_inches="tight", format='svg')
+        fig5.savefig(date_folder_path + r"\DelayTimePerFrame.svg", dpi=400, bbox_inches="tight", format='svg')
 
 
 def CDFtest(nNode):
@@ -185,7 +191,7 @@ def CDFtest(nNode):
         color = PROTOCOL_COLORS.get(mac_name, '#7f7f7f')
         plt.plot(prrs, cdf, linewidth=2.5, color=color, label=mac_name)
 
-    plt.grid(True, alpha=0.3)
+    plt.grid(True, alpha=0.5)
     plt.legend(fontsize=12)
     plt.xlabel("PRR", fontsize=12)
     plt.ylabel("CDF", fontsize=12)
@@ -203,8 +209,7 @@ def CDFtest(nNode):
             os.fsync(f.fileno())  # 强制操作系统将缓冲区写入磁盘
 
         # 保存图片
-        fig1.savefig(res_folder + r"\prr-cdf-{}.png".format(nNode), dpi=400, bbox_inches="tight")
-
+        fig1.savefig(res_folder + r"\prr-cdf-{}.svg".format(nNode), dpi=400, bbox_inches="tight", format='svg')
 
     plt.show()
 
@@ -237,23 +242,23 @@ if __name__ == "__main__":
     GCfg.GlobalConfig(**cfg)
 
     # 单次测试, 评估PRR分布特性
-    CDFtest(1000)
+    # CDFtest(1000)
 
     # 批量测试例程
-    # process_list = []  # 进程池
-    # manager = Manager()  # ？
-    # result_dict = manager.dict()
-    # NodeMap = GCfg.ParameterOptimization.minTOA  # 初始参数分配方法/节点分布
-    # num_list = range(50, 3300, 250)
-    # for LoRaMAC in GCfg.LoRaMAC:
-    #     for NodeNum in num_list:
-    #         p = Process(target=func, args=(LoRaMAC, NodeNum, NodeMap, result_dict, cfg))
-    #         p.start()
-    #         process_list.append(p)
-    #
-    #     for i in process_list:
-    #         i.join()
-    # # 可视化结果
-    # show_result(result_dict)
-    # plt.show()  # 显示图片
-    # print('end')
+    process_list = []  # 进程池
+    manager = Manager()  # ？
+    result_dict = manager.dict()
+    NodeMap = GCfg.ParameterOptimization.minTOA  # 初始参数分配方法/节点分布
+    num_list = range(50, 3300, 250)
+    for LoRaMAC in GCfg.LoRaMAC:
+        for NodeNum in num_list:
+            p = Process(target=func, args=(LoRaMAC, NodeNum, NodeMap, result_dict, cfg))
+            p.start()
+            process_list.append(p)
+
+        for i in process_list:
+            i.join()
+    # 可视化结果
+    show_result(result_dict)
+    plt.show()  # 显示图片
+    print('end')

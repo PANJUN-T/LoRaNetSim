@@ -37,7 +37,7 @@ class LoRaMAC(Enum):
     ALOHA = "ALOHA"
     LMAC1 = "LMAC-1"
     LMAC2 = "LMAC-2"
-    CSMALoRa = "CSMA-LoRa"
+    # CSMALoRa = "CSMA-LoRa"
 
 
 

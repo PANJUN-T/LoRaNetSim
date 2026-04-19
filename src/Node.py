@@ -89,10 +89,10 @@ class Node:
             # MAC层
             try_time = self.env.now
             # 🔶1、ALOHA，随机选择信道发送
-            if self.MAC == GCfg.LoRaMAC.ALOHA:
+            if self.MAC.value == "ALOHA":
                 pass
             # 🔶2、LMAC-1，CAD+退避
-            elif self.MAC == GCfg.LoRaMAC.LMAC1:
+            elif self.MAC.value == "LMAC-1":
                 # ---> DIFS
                 while True:
                     _is_busy = False
@@ -118,7 +118,7 @@ class Node:
                             if not _is_busy:  # DIFS期间所有CAD都空闲，跳出DIFS
                                 break
             # 3、🔶LMAC-2, CAD+退避+信道切换
-            elif self.MAC == GCfg.LoRaMAC.LMAC2:
+            elif self.MAC.value == "LMAC-2":
                 a = 0.2
                 # 新信道，记录清零
                 cad_total, cad_failed = 0, 0
@@ -210,7 +210,7 @@ class Node:
                                 cad_total, cad_failed = 0, 0
 
             # 4、🔶CSMA-LORA-new, 扩展DIFS时间到TOA
-            elif self.MAC == GCfg.LoRaMAC.CSMALoRa:
+            elif self.MAC.value == "CSMA-LoRa":
                 DIFS_CAD_NUM = 9
                 maxTOA = LifetimeModule.TOACalculate(packet.bw, packet.sf, packet.cr, 25)
                 DelayTime = maxTOA / (DIFS_CAD_NUM - 1)
