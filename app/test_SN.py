@@ -1,15 +1,12 @@
 import time
-from datetime import datetime
-from multiprocessing import Process
-from multiprocessing import Manager
 
 import json
 
 from collections import defaultdict
 import os
 
-from src import GlobalCfg as GCfg
-from src.Simulator import LoRaSimulationEnv
+from ctrl import GlobalCfg as GCfg
+from ctrl.Simulator import LoRaSimulationEnv
 
 
 def SaveData(res_dict):

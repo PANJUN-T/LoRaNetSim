@@ -4,8 +4,8 @@ from multiprocessing import Manager
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src import GlobalCfg as GCfg
-from src.Simulator import LoRaSimulationEnv
+from ctrl import GlobalCfg as GCfg
+from ctrl.Simulator import LoRaSimulationEnv
 
 from collections import defaultdict
 import os
@@ -173,7 +173,8 @@ def CDFtest(nNode):
     for LoRaMAC in GCfg.LoRaMAC:
         LoRaSim = LoRaSimulationEnv(nNode, LoRaMAC, GCfg.ParameterOptimization.minTOA)
         LoRaSim.run()
-        result[LoRaMAC.value] = {"PRRs": LoRaSim.PRRs}
+        result[LoRaMAC.value] = {"PRRs": LoRaSim.PRRs,"EnergyConsumptions": LoRaSim.EnergyConsumptions}
+
     # 不同协议下的PRR分布CDF对比图
     fig1 = plt.figure(figsize=(8, 5))
     # 协议固定配色
@@ -197,20 +198,34 @@ def CDFtest(nNode):
     plt.ylabel("CDF", fontsize=12)
     plt.tight_layout()
 
+    # 不同协议下的EnergyConsumptions分布CDF对比图
+    fig2 = plt.figure(figsize=(8, 5))
+    for mac_name, data in result.items():
+        EnergyConsumptions = np.sort(data["EnergyConsumptions"])
+        cdf = np.arange(1, len(EnergyConsumptions) + 1) / len(EnergyConsumptions)
+        color = PROTOCOL_COLORS.get(mac_name, '#7f7f7f')
+        plt.plot(EnergyConsumptions, cdf, linewidth=2.5, color=color, label=mac_name)
+
+    plt.grid(True, alpha=0.5)
+    plt.legend(fontsize=12)
+    plt.xlabel("Energy Consumption", fontsize=12)
+    plt.ylabel("CDF", fontsize=12)
+    plt.tight_layout()
+
 
     # 🔶保存数据
     if GCfg.AutoSaveResult:
         res_folder = "MAC_Result"
         os.makedirs(res_folder, exist_ok=True)
         # 保存原始数据
-        with open(str(res_folder + r"\prr-cdf-{}.json".format(nNode)), "w", encoding="utf-8") as f:  # 保存原始数据
+        with open(str(res_folder + r"\cdf-{}.json".format(nNode)), "w", encoding="utf-8") as f:  # 保存原始数据
             json.dump(result, f, ensure_ascii=False, indent=4)
             f.flush()  # 清空Python级别的缓冲区
             os.fsync(f.fileno())  # 强制操作系统将缓冲区写入磁盘
 
         # 保存图片
         fig1.savefig(res_folder + r"\prr-cdf-{}.svg".format(nNode), dpi=400, bbox_inches="tight", format='svg')
-
+        fig2.savefig(res_folder + r"\Energy-cdf-{}.svg".format(nNode), dpi=400, bbox_inches="tight", format='svg')
     plt.show()
 
 
@@ -242,7 +257,7 @@ if __name__ == "__main__":
     GCfg.GlobalConfig(**cfg)
 
     # 单次测试, 评估PRR分布特性
-    # CDFtest(1000)
+    CDFtest(1000)
 
     # 批量测试例程
     process_list = []  # 进程池

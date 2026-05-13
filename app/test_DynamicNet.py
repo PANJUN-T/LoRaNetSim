@@ -1,17 +1,10 @@
 import os
-from datetime import datetime
-from multiprocessing import Process
-from multiprocessing import Manager
 
-import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src import GlobalCfg as GCfg
-from src.NodeMap import NodeMap
-from src.Simulator import LoRaSimulationEnv
-
-from collections import defaultdict
+from ctrl import GlobalCfg as GCfg
+from ctrl.Simulator import LoRaSimulationEnv
 
 
 def show_result(prr, goodput):
