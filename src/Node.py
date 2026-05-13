@@ -2,7 +2,7 @@ import numpy as np
 import simpy
 
 # from .GlobalCfg import *
-from src import GlobalCfg as GCfg
+from ctrl import GlobalCfg as GCfg
 from .Packet import Packet
 import random
 import math
@@ -74,17 +74,30 @@ class Node:
                 key = (ch, sf)
                 self.channel_state[key] = 0
 
-        self.send_process = self.env.process(self.Transmit())
+        self.resource = simpy.Resource(self.env, capacity=1)  # 待发送数据包队列
+        self.timer_process = self.env.process(self.Timer())
 
-    def Transmit(self):
+    def Timer(self):
+        # DS_LoRa 退避时隙数量上限确定
+        self.MaxSlot = max(math.ceil(GCfg.SFNodes[int(self.SF)] / len(GCfg.LoRaParameter.CH_List)), 1)
+        self.MaxSlot = max(min(self.MaxSlot - 1, 80), 1)
+
+        # 泊松分布的数据包产生
         while True:
-            # 伪泊松分布的数据包产生
-            self.PL = random.randint(5, 25)  # 随机负载长度
             timeval = random.expovariate(GCfg.lamuda) * 1000  # ms
             yield self.env.timeout(timeval)
 
             # 获取数据包实体
+            # self.PL = random.randint(5, 25)  # 随机负载长度
             packet = self.Generate_Packet()
+
+            # 发送数据包
+            self.env.process(self.Transmit(packet))
+
+    def Transmit(self, packet):
+        # 队列形式的数据包发送任务，不丢弃旧包
+        with self.resource.request() as req:
+            yield req  # 等待本节点信道空闲
 
             # MAC层
             try_time = self.env.now
@@ -260,7 +273,7 @@ class Node:
         # 记录ACK（只有未碰撞的包才记录）,去除因为碰撞引起的丢包,只考虑信噪比丢包
         if not packet.collided:
             self.ACKList.append(packet.ACK)
-            self.ACK_COUNT += 1
+            # self.ACK_COUNT += 1
         # 上行ADR
         # if GCfg.ADR:
         #     if self.ACK_COUNT % self.ACK_NUM == 0:  # 达到最高上行尝试次数

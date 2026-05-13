@@ -1,9 +1,7 @@
 import math
 
 from src.CoverageModule import CoverageModule
-from src import GlobalCfg as GCfg
-
-from scipy.optimize import minimize
+from ctrl import GlobalCfg as GCfg
 
 
 class ParamAlloc:

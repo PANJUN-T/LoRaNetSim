@@ -1,15 +1,5 @@
-from datetime import datetime
-from multiprocessing import Process
-from multiprocessing import Manager
-
-import json
-
-from collections import defaultdict
-import os
-
-from src import GlobalCfg as GCfg
-from src.Simulator import LoRaSimulationEnv
-import matplotlib.pyplot as plt
+from ctrl import GlobalCfg as GCfg
+from ctrl.Simulator import LoRaSimulationEnv
 
 if __name__ == "__main__":
     # 全局参数配置

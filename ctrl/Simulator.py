@@ -6,23 +6,23 @@ from datetime import datetime
 import simpy
 import random
 
-from .Channel import LoRaChannel
-from .Gateway import GW
+from src.Channel import LoRaChannel
+from src.Gateway import GW
 
-from .NodeMap import NodeMap
-from .Node import Node
-from .DynamicShowMap import DynamicShowMap
+from src.NodeMap import NodeMap
+from src.Node import Node
+from src.DynamicShowMap import DynamicShowMap
 
-from src import GlobalCfg as GCfg
+from ctrl import GlobalCfg as GCfg
 
 
 class LoRaSimulationEnv:
-    def __init__(self, node_num, mac, optimization):
+    def __init__(self, node_num, mac, mapName):
         self.env = simpy.Environment()  # simpy环境
         self.sim_duration = GCfg.SimulationDuration  # 仿真时长（ms）
         self.run_time = None
         # 仿真配置
-        self.Parameter_Optimization = optimization.value  # 单节点参数优化方案
+        self.mapStr = mapName.value  # 单节点参数优化方案
         self.MAC = mac  # MAC协议选择
         self.node_num = node_num  # 节点数量
         self._max_node_id = 0
@@ -38,9 +38,11 @@ class LoRaSimulationEnv:
         self.CADsPerFrame = None
         self.DelayTimePerFrame = None
         self.PRRs = []  # 节点PRR分布
+        self.EnergyConsumptions = []  # 节点能耗分布
         # 区间仿真结果
         self.temp_PRR = []
         self.temp_Goodput = []
+        self.temp_EnergyEfficiency = []
         # ADR调参计时
         self.ADR_all_adjusted = False
         self.ADR_adjustment_time = 0
@@ -48,7 +50,7 @@ class LoRaSimulationEnv:
 
     def run(self):
         # 获取节点分布
-        self.map = NodeMap.GetNodeMap(self.node_num, self.Parameter_Optimization)
+        self.map = NodeMap.GetNodeMap(self.node_num, self.mapStr)
         # 创建节点
         for nid in self.map.keys():
             node = Node(self.env, self.CHANNEL, self.GW, self.MAC,
@@ -77,7 +79,7 @@ class LoRaSimulationEnv:
         # 添加节点
         n = 1500
         # TODO DEBUG:新节点位置与原节点位置有重复的可能，地图显示无法看出重叠的节点
-        map_temp = NodeMap.RandomChoice(n, self.Parameter_Optimization)
+        map_temp = NodeMap.RandomChoice(n, self.mapStr)
         for info in map_temp.values():
             nid = self._max_node_id + 1
             node = Node(self.env, self.CHANNEL, self.GW, self.MAC,
@@ -87,7 +89,7 @@ class LoRaSimulationEnv:
 
         yield self.env.timeout(GCfg.STATISTICS_INTERVAL * 5 * 1)
         n = 1500
-        map_temp = NodeMap.RandomChoice(n, self.Parameter_Optimization)
+        map_temp = NodeMap.RandomChoice(n, self.mapStr)
         for info in map_temp.values():
             nid = self._max_node_id + 1
             node = Node(self.env, self.CHANNEL, self.GW, self.MAC,
@@ -107,7 +109,6 @@ class LoRaSimulationEnv:
     def monitor(self):
         while True:
             yield self.env.timeout(GCfg.STATISTICS_INTERVAL / 2)
-            print("time: {:.1f}s".format(self.env.now / 60000))
             # 每隔一段时间统计网络性能
             sumSend = 0
             for node in self.Nodes:
@@ -121,6 +122,7 @@ class LoRaSimulationEnv:
             self.temp_PRR.append(0 if sumSend == 0 else min(sumReceive / sumSend, 1.0))
             # Goodput
             self.temp_Goodput.append((sumReceive * GCfg.LoRaParameter.PL) / (GCfg.STATISTICS_INTERVAL / 2 / 1000))
+
 
     def DynamicShowMap(self):
         DynamicMap = {}
@@ -154,6 +156,7 @@ class LoRaSimulationEnv:
             SumSendEnergy += node.energy_sum
             sumDelayTime += node.avg_delay
             self.PRRs.append(0 if (node.send_sum == 0) else round(node.aflewer / node.send_sum, 4))
+            self.EnergyConsumptions.append(node.energy_sum)
 
         # 注意异常数据处理：不能除0
         # PRR

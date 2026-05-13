@@ -7,9 +7,8 @@ import numpy as np
 from matplotlib.patches import Circle
 from matplotlib.colors import LinearSegmentedColormap
 from src.ParameterAllocation import ParamAlloc
-from src.CoverageModule import CoverageModule
 
-from src import GlobalCfg as GCfg
+from ctrl import GlobalCfg as GCfg
 import matplotlib.pyplot as plt
 
 

@@ -1,6 +1,5 @@
 # from .GlobalCfg import *
-from src import GlobalCfg as GCfg
-from .Packet import Packet
+from ctrl import GlobalCfg as GCfg
 from src.CoverageModule import CoverageModule
 
 class GW:
@@ -25,6 +24,7 @@ class GW:
         sf_idx = pkt.node.SF - 7
         # 数据包接收条件判断 (数据包未碰撞且信道强度大于接收阈值), (仿真器性能测试模式只检测碰撞)
         if (not pkt.collided) if GCfg.SimModule == "SN" else (not pkt.collided and RSS >= CoverageModule.sensi[sf_idx]):
+        # if not pkt.collided:
             self.receive_sum += 1  # 接收+1
             self.receive_in_interval += 1
             self.rec_energy_sum += pkt.pktenergy

@@ -9,8 +9,8 @@ from collections import defaultdict
 import os
 
 # from src.GlobalCfg import *
-from src import GlobalCfg as GCfg
-from src.Simulator import LoRaSimulationEnv
+from ctrl import GlobalCfg as GCfg
+from ctrl.Simulator import LoRaSimulationEnv
 
 
 def show_result(res_dict):
