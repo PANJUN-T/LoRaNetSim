@@ -2,6 +2,8 @@
 
 LoRaNetSim是一个基于simpy的适用于LoRa网络的数据包级别仿真器，可以实现MAC信道接入协议仿真、参数分配方法仿真、动态网络仿真、ADR仿真、能耗相关仿真，同时提供仿真器性能测试例程和自动化测试脚本例程与对应实验结果的可视化例程。
 
+![](https://github.com/PANJUN-T/LoRaNetSim/blob/main/src/Pictrue/Architecture.png?raw=true)
+
 ## 参考文献
 
 [1]LoRa网络上行容量扩展方法研究[D].2026
