@@ -78,7 +78,6 @@ class LoRaSimulationEnv:
         yield self.env.timeout(GCfg.STATISTICS_INTERVAL * 5 * 1)
         # 添加节点
         n = 1500
-        # TODO DEBUG:新节点位置与原节点位置有重复的可能，地图显示无法看出重叠的节点
         map_temp = NodeMap.RandomChoice(n, self.mapStr)
         for info in map_temp.values():
             nid = self._max_node_id + 1
@@ -107,8 +106,12 @@ class LoRaSimulationEnv:
         #         self.Nodes.remove(node)
 
     def monitor(self):
+        STATISTICS_INTERVAL = 60000 * 1  # 秒
         while True:
-            yield self.env.timeout(GCfg.STATISTICS_INTERVAL / 2)
+            yield self.env.timeout(STATISTICS_INTERVAL / 2)  # 半秒
+
+            print("time: {:.1f}s".format(self.env.now / 60000))
+
             # 每隔一段时间统计网络性能
             sumSend = 0
             for node in self.Nodes:
@@ -127,7 +130,7 @@ class LoRaSimulationEnv:
     def DynamicShowMap(self):
         DynamicMap = {}
         DM = DynamicShowMap()  # 动态地图
-
+        STATISTICS_INTERVAL = 60000 * 4
         while True:
             # 重建地图字典
             for node in self.Nodes:
@@ -140,7 +143,7 @@ class LoRaSimulationEnv:
                 }
             DM.ShowMap(DynamicMap)  # 更新图像
             print("time: {:.1f}s".format(self.env.now / 60000))
-            yield self.env.timeout(GCfg.STATISTICS_INTERVAL)  # 刷新率
+            yield self.env.timeout(STATISTICS_INTERVAL)  # 刷新率
 
     def Show_Results(self):
         SumReceive = self.GW.receive_sum

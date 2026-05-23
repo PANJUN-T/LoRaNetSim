@@ -22,8 +22,7 @@ time = Time_List[0]
 
 with open(str(time + r"\PRR_LoRaNetSim.json"), "r", encoding="utf-8") as f:
     DER_LoRaNetSim = json.load(f)
-with open(str(time + r"\PRR_LoRaSim.json"), "r", encoding="utf-8") as f:
-    DER_LoRaSim = json.load(f)
+
 
 for sn in SN_List:
     style = SN_STYLE[sn]
@@ -34,14 +33,7 @@ for sn in SN_List:
              label=f"{sn}-LoRaNetSim")
 
 
-for sn in SN_List:
-    style = SN_STYLE[sn]
-    # LoRaSim：虚线 + 空心标记
-    plt.plot(DER_LoRaSim[sn]['nodes'], DER_LoRaSim[sn]['prr'],
-             marker=style['marker'], linestyle='--',
-             color=style['color'], linewidth=2, markersize=7,
-             markerfacecolor='white', markeredgewidth=1.5,
-             label=f"{sn}-LoRaSim")
+
 
 # 图表美化
 plt.grid(True, alpha=0.4, linestyle="--", color="gray")
@@ -59,8 +51,7 @@ for idx, time in enumerate(Time_List):
 
     with open(str(time + r"\TIME_LoRaNetSim.json"), "r", encoding="utf-8") as f:
         Time_LoRaNetSim = json.load(f)
-    with open(str(time + r"\TIME_LoRaSim.json"), "r", encoding="utf-8") as f:
-        Time_LoRaSim = json.load(f)
+
 
     nodes = Time_LoRaNetSim[TARGET_SN]['nodes']
 
@@ -74,15 +65,7 @@ for idx, time in enumerate(Time_List):
                  color=color, linewidth=2, markersize=7,
                  label=f"{time}-LoRaNetSim")
 
-    # LoRaSim：星形 + 点线
-    data = Time_LoRaSim[TARGET_SN]
-    times_list = np.array(data["times_list"])
-    mean_Sim = np.mean(times_list, axis=0)
-    std_Sim = np.std(times_list, axis=0)
-    plt.errorbar(nodes, mean_Sim, yerr=std_Sim,
-                 linestyle='--', marker='*', capsize=5, capthick=2,
-                 color=color, linewidth=2, markersize=9,
-                 label=f"{time}-LoRaSim")
+
 
 plt.grid(True, alpha=0.4, linestyle="--")
 plt.xlabel("Number of Nodes", fontsize=12)

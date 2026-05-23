@@ -83,16 +83,16 @@ def show_result(res_dict):
     plt.show()  # 显示图片
 
 
-def func(mac, nNode, optimization, r_dict, cfg):
+def func(mac, nNode, NodeMap, r_dict, cfg):
     # 多进程相互独立，也需要更新全局参数
     GCfg.GlobalConfig(**cfg)
 
     # 可自定义参数：节点数、仿真时长
-    LoRaSim = LoRaSimulationEnv(nNode, mac, optimization)
+    LoRaSim = LoRaSimulationEnv(nNode, mac, NodeMap)
     LoRaSim.run()
 
     # 结果
-    dict_key = (optimization.value, nNode)
+    dict_key = (NodeMap.value, nNode)
     r_dict[dict_key] = [float(LoRaSim.Goodput), float(LoRaSim.PRR)]
 
 

@@ -4,7 +4,7 @@ LoRaNetSim是一个基于simpy的适用于LoRa网络的数据包级别仿真器�
 
 ## 参考文献
 
-[1]LoRa网络上行容量扩展方法研究（硕士论文待发表）
+[1]LoRa网络上行容量扩展方法研究[D].2026
 
 [2]BOR M C, ROEDIG U, VOIGT T, et al. Do LoRa low-power wide-area networks scale?[C]//ACM International Conference on Modeling, Analysis and Simulation of Wireless and Mobile Systems (MSWiM). Malta Malta: ACM, 2016: 59-67.
 
@@ -133,12 +133,4 @@ LifetimeModule.TOACalculate() 计算TOA
 ```
 
 
-
-## 其他
-
-与LoRaSim的对比评估，CPU主频为2.4GHz，8核16线程
-
-![](https://github.com/PANJUN-T/LoRaNetSim/blob/main/src/Pictrue/SimunlatorPRR.png?raw=true)
-
-![](https://github.com/PANJUN-T/LoRaNetSim/blob/main/src/Pictrue/SimunlatorTime.png?raw=true)
 

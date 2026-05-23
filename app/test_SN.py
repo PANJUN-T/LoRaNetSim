@@ -59,14 +59,14 @@ def SaveData(res_dict):
         os.fsync(f.fileno())  # 强制操作系统将缓冲区写入磁盘
 
 
-def func(mac, nNode, optimization, r_dict, SN_key, cfg):
+def func(mac, nNode, NodeMap, r_dict, SN_key, cfg):
     GCfg.GlobalConfig(**cfg)  # 配置全局参数
 
     GCfg.SN_idx = SN_key
 
     start_time = time.time()  # 记录开始时间
     # 可自定义参数：节点数、仿真时长
-    LoRaSim = LoRaSimulationEnv(nNode, mac, optimization)
+    LoRaSim = LoRaSimulationEnv(nNode, mac, NodeMap)
     LoRaSim.run()
 
     run_time = time.time() - start_time  # 计算耗时（秒）
@@ -93,21 +93,21 @@ if __name__ == "__main__":
 
     result_dict = dict()
     LoRa_MAC = GCfg.LoRaMAC.ALOHA
-    parameter_optimization = GCfg.ParameterOptimization.minTOA
+    NodeMap = GCfg.ParameterOptimization.minTOA
 
     # 单次测试
-    func(LoRa_MAC, 100, parameter_optimization, result_dict, "SN1", cfg)
-    func(LoRa_MAC, 100, parameter_optimization, result_dict, "SN2", cfg)
-    func(LoRa_MAC, 100, parameter_optimization, result_dict, "SN3", cfg)
+    func(LoRa_MAC, 3000, NodeMap, result_dict, "SN1", cfg)
+    func(LoRa_MAC, 3000, NodeMap, result_dict, "SN2", cfg)
+    func(LoRa_MAC, 3000, NodeMap, result_dict, "SN3", cfg)
 
 
-    # # 批量测试
-    # for x in range(0, 10):
+    # 批量测试
+    # for x in range(0, 4):
     #     cfg["new_SimulationDuration"] = 60000 * 60 * (2 ** x)
     #     GCfg.GlobalConfig(**cfg)
     #
-    #     num_list = range(1, 3000, 250)
-    #     for i in range(1, 10):
+    #     num_list = range(1, 300, 250)  # 少量节点功能测试，实测：range(1, 3000, 250)
+    #     for i in range(1, 2):
     #         print("时间:{}, 循环次数：{}".format(int(GCfg.SimulationDuration / (60000 * 60)), i))
     #         for SN_key, SN_value in GCfg.SN.items():
     #             for node_num in num_list:

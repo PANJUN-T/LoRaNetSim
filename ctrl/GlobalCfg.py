@@ -4,7 +4,7 @@ from typing import Dict, Tuple, Deque
 
 # 🔸仿真时间
 SimulationDuration = 60000 * 5  # 分钟
-STATISTICS_INTERVAL = 60000 * 4  # 时间轴统计方式，1分钟统计一次
+
 
 # 🔸泊松部分的数据包发送间隔
 lamuda = 0.1
@@ -90,7 +90,6 @@ def GlobalConfig(
         new_SimulationDuration=None,
         new_lamuda=None,
         new_ADR=None,
-        new_AorD=None,
         new_AutoSaveResult=None,
         new_Actual_CADe=None,
         new_SimModule=None,
